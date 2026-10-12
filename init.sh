@@ -13,10 +13,10 @@ read -r -p "Коротка назва wiki [$DEFAULT_NAME]: " NAME
 NAME=${NAME:-$DEFAULT_NAME}
 
 # 1. Дата у стартових файлах
-for f in wiki/me.md wiki/index.md wiki/log.md; do
+for f in wiki/me.md wiki/index.md wiki/log.md wiki/waiting.md wiki/questions.md; do
   perl -pi -e "s/YYYY-MM-DD/${TODAY}/g" "$f"
 done
-echo "✓ Дата $TODAY у wiki/me.md, wiki/index.md, wiki/log.md"
+echo "✓ Дата $TODAY у стартових сторінках wiki/"
 
 # 2. Пошук qmd: встановити, якщо нема; додати колекцію; описати; побудувати індекс
 if ! command -v qmd >/dev/null 2>&1; then
