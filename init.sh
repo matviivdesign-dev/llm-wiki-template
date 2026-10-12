@@ -32,8 +32,8 @@ fi
 qmd context add "qmd://${NAME}" "Персональна wiki ${NAME}: wiki/ — сторінки, які пише Claude; raw/ — джерела" >/dev/null 2>&1 || true
 qmd context add "qmd://${NAME}/wiki" "Сторінки wiki: хаб me.md, areas, projects, people, themes, decisions, journal" >/dev/null 2>&1 || true
 qmd context add "qmd://${NAME}/raw" "Сирі джерела: щоденник, статті, книжки, подкасти, нотатки, проекти" >/dev/null 2>&1 || true
-qmd update >/dev/null
-qmd embed >/dev/null
+# collection add уже проіндексував файли; лишилось порахувати вектори саме для цієї колекції
+qmd embed -c "${NAME}" >/dev/null
 echo "✓ Індекс qmd побудовано (перший раз qmd качає моделі, це може зайняти кілька хвилин)"
 
 # 3. Блок у глобальних інструкціях Claude Code
