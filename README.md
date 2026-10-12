@@ -1,93 +1,100 @@
-# LLM Wiki — шаблон
+# LLM Wiki Template
 
-Порожня особиста база знань, яку веде Claude Code.
+An empty personal knowledge base that Claude Code maintains for you.
 
-Як це працює: ти кладеш джерела у папку `raw/` (статті, щоденник, нотатки, записи розмов) і ставиш питання.
-Claude читає джерела, пише сторінки у `wiki/`, зв'язує їх лінками і тримає все в порядку. Ти ніколи не пишеш
-сторінки сам. Ідея детально — у [llm-wiki.md](llm-wiki.md).
+You drop sources into `raw/` (articles, journal entries, notes, meeting transcripts) and ask questions.
+Claude reads the sources, writes the pages in `wiki/`, links them together and keeps everything tidy.
+You never write wiki pages yourself. The idea is described in [llm-wiki.md](llm-wiki.md).
 
-Тут немає коду, бази даних чи сервера. Це папка markdown-файлів, git і два інструменти:
-**Claude Code** (пише) і **qmd** (шукає). Читати зручно в Obsidian.
+There is no code, database or server here. It is a folder of markdown files, git, and two tools:
+**Claude Code** (writes) and **qmd** (searches). Read it in Obsidian.
 
-## Запуск за 5 хвилин
+## Setup in 5 minutes
 
-Потрібні: [Claude Code](https://claude.com/claude-code), Node.js 20+, git, за бажанням Obsidian.
+You need: [Claude Code](https://claude.com/claude-code), Node.js 20+, git. Obsidian is optional.
 
-1. **Створи свій репозиторій з цього шаблону.** На GitHub — кнопка **Use this template**. Або в терміналі:
+1. **Create your repo from this template.** Click **Use this template** on GitHub, or:
 
    ```bash
    gh repo create my-wiki --private --template matviivdesign-dev/llm-wiki-template --clone
    cd my-wiki
    ```
 
-   Репозиторій тримай приватним: у ньому буде твоє здоров'я, гроші, люди.
+   Keep it private. It will hold your health, money and people.
 
-2. **Запусти налаштування:**
+2. **Run the setup script:**
 
    ```bash
    ./init.sh
    ```
 
-   Скрипт проставить дату у стартових файлах, встановить пошук qmd і проіндексує папку, спитає, чи додати
-   wiki у глобальні інструкції Claude Code, потім видалить себе й зробить коміт.
+   It stamps today's date into the starter pages, installs qmd search and indexes the folder, offers to add
+   the wiki to your global Claude Code instructions, then deletes itself and commits.
 
-3. **Відкрий папку в Obsidian** як vault. У Settings → Files and links постав attachment folder `raw/assets/`.
+3. **Open the folder in Obsidian** as a vault. In Settings → Files and links, set the attachment folder to `raw/assets/`.
 
-4. **Поклади перше джерело** у `raw/`. Назва файлу `YYYY-MM-DD-що-це.md`. Детальніше — [raw/README.md](raw/README.md).
+4. **Add your first source** to `raw/`. Name it `YYYY-MM-DD-what-it-is.md`. See [raw/README.md](raw/README.md).
 
-5. **Запусти `claude` у папці і скажи «ingest».** Claude спитає дозвіл на пошук qmd — погодься. Він прочитає
-   джерело, обговорить з тобою головне, напише сторінки і видалить папку `examples/`.
+5. **Run `claude` in the folder and say "ingest".** Claude will ask permission for the qmd search server, agree.
+   It reads the source, discusses the key points with you, writes the pages and removes the `examples/` folder.
 
-## Як користуватись щодня
+## Daily use
 
-| Ти кажеш | Claude робить |
+| You say | Claude does |
 |---|---|
-| «ingest raw/articles/….md» | читає, пише сторінку, оновлює дотичні сторінки, хаб, індекс, лог, пошук |
-| розповідаєш щось цінне у чаті | спершу записує це у `raw/notes/`, потім робить ingest (Capture) |
-| будь-яке питання | шукає через qmd, читає сторінки, відповідає з лінками; цінні відповіді зберігає як сторінки |
-| «lint» | шукає протиріччя, застаріле, сторінки без лінків, джерела без сторінок. Сам пропонує кожен десятий ingest |
+| "ingest raw/articles/….md" | reads it, writes a page, updates related pages, the hub, the index, the log and the search index |
+| something worth keeping, in chat | saves your words to `raw/notes/` first, then ingests them (Capture) |
+| any question | searches with qmd, reads the pages, answers with links; saves overviews and comparisons as pages |
+| "lint" | finds contradictions, stale claims, pages without links, sources without pages. Offers it every tenth ingest |
 
-Зміни Claude робить у гілці `ingest/<тема>` і комітить. Push і Pull Request — тільки коли попросиш.
+Claude commits to an `ingest/<topic>` branch. Push and pull requests happen only when you ask.
 
-## Що в папці
+## What is in the folder
 
 ```
-raw/        твої джерела. Claude тільки читає, ніколи не змінює
-wiki/       сторінки, які пише Claude
-  me.md       хаб: хто ти зараз, лінки на все
-  waiting.md  усе, що чекає на твоє рішення, з датами
-  questions.md 10 питань, за якими перевіряється, чи wiki відповідає швидко
-  answers/    збережені відповіді: огляди, порівняння, синтез
-  areas/      сфери життя (здоров'я, робота, гроші…)
-  projects/   проекти з фінішем
-  people/     люди
-  themes/     патерни, що повторюються у кількох джерелах
-  decisions/  рішення: що, коли, чому, що очікуєш
-  journal/    синтез по місяцях і кварталах
-  index.md    каталог усіх сторінок, рядок на сторінку
-  log.md      журнал: що і коли зроблено
-templates/  скелети сторінок за типами
-examples/   вигадані зразки, зникають після першого ingest
-CLAUDE.md   правила для Claude: структура, шапка сторінки, операції, git
-.mcp.json   підключає пошук qmd до Claude Code
-init.sh     разове налаштування
+raw/        your sources. Claude only reads them, never changes them
+wiki/       pages written by Claude
+  me.md       hub: who you are now, links to everything
+  waiting.md  everything waiting for your decision, with dates
+  questions.md 10 questions used to check that the wiki answers fast
+  answers/    saved answers: overviews, comparisons, synthesis
+  areas/      areas of life (health, work, money…)
+  projects/   projects with an end
+  people/     people
+  themes/     patterns that repeat across several sources
+  decisions/  decisions: what, when, why, what you expect
+  journal/    monthly and quarterly synthesis
+  index.md    catalog of all pages, one line each
+  log.md      what was done and when
+templates/  page skeletons per type
+examples/   fictional sample pages, removed after the first ingest
+CLAUDE.md   rules for Claude: structure, page header, operations, git
+.mcp.json   connects qmd search to Claude Code
+init.sh     one-time setup
 ```
 
-## Пошук
+## Search
 
-Пошук вбудований: [qmd](https://github.com/tobi/qmd) індексує `wiki/` і `raw/` і працює як MCP-сервер для
-Claude Code (`.mcp.json`). Claude шукає ним на кожне питання, а після кожного ingest оновлює індекс.
-Ти теж можеш шукати з терміналу:
+Search is built in: [qmd](https://github.com/tobi/qmd) indexes `wiki/` and `raw/` and runs as an MCP server for
+Claude Code (`.mcp.json`). Claude searches with it on every question and refreshes the index after every ingest.
+You can search from the terminal too:
 
 ```bash
-qmd query "про що я домовився з Оленою"
-qmd search "garden-app"          # тільки за словами, без моделі
+qmd query "what did I agree with Olena"
+qmd search "garden-app"          # keywords only, no model
 ```
 
-Індекс лежить у `~/.cache/qmd/`, у репозиторій не потрапляє. Перший запуск качає моделі для семантичного
-пошуку, це кілька хвилин і кількасот мегабайт.
+The index lives in `~/.cache/qmd/`, outside the repo. The first run downloads models for semantic search
+(a few minutes, a few hundred MB).
 
-## Під свою тему
+## Language
 
-Шаблон налаштований під особисту wiki. Для дослідження, книги чи команди відкрий `CLAUDE.md` і зміни розділи
-`wiki/` та правила змісту. Решта — папка `raw/`, індекс, лог, пошук, git-флоу — працює для будь-якої теми.
+The rules in `CLAUDE.md`, the page templates and the examples are written in Ukrainian. Claude follows them
+regardless of the language you talk to it in. To switch, ask Claude to translate `CLAUDE.md` and `templates/`
+in your first session.
+
+## Adapting it
+
+The template is set up for a personal wiki. For research, a book or a team, open `CLAUDE.md` and change the
+`wiki/` sections and the content rules. Everything else, `raw/`, the index, the log, search and the git flow,
+works for any topic.
