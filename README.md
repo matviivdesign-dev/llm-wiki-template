@@ -1,17 +1,28 @@
 # LLM Wiki Template
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Template](https://img.shields.io/badge/GitHub-Use%20this%20template-2ea44f)](https://github.com/matviivdesign-dev/llm-wiki-template/generate)
+[![Version](https://img.shields.io/badge/version-0.1.0-lightgrey)](CHANGELOG.md)
+
 An empty personal knowledge base that Claude Code maintains for you.
 
-You drop sources into `raw/` (articles, journal entries, notes, meeting transcripts) and ask questions.
-Claude reads the sources, writes the pages in `wiki/`, links them together and keeps everything tidy.
-You never write wiki pages yourself. The idea is described in [llm-wiki.md](llm-wiki.md).
+You drop sources into `raw/` (articles, journal entries, notes, transcripts) and ask questions. Claude reads the
+sources, writes the pages in `wiki/`, links them together and keeps everything tidy. You never write wiki pages
+yourself.
 
-There is no code, database or server here. It is a folder of markdown files, git, and two tools:
-**Claude Code** (writes) and **qmd** (searches). Read it in Obsidian.
+There is no code, database or server. It is a folder of markdown files, git, and two tools: **Claude Code**
+(writes) and **qmd** (searches). Read it in Obsidian or any markdown editor.
+
+## Requirements
+
+- [Claude Code](https://claude.com/claude-code) with an active subscription or API key
+- Node.js 20 or newer (for qmd)
+- git, and the [GitHub CLI](https://cli.github.com/) if you create the repo from the terminal
+- macOS or Linux. `init.sh` was tested on macOS 26; it uses only `bash`, `perl`, `npm` and `git`, so Linux
+  should work. Windows: use WSL.
+- Optional: [Obsidian](https://obsidian.md) to read the wiki
 
 ## Setup in 5 minutes
-
-You need: [Claude Code](https://claude.com/claude-code), Node.js 20+, git. Obsidian is optional.
 
 1. **Create your repo from this template.** Click **Use this template** on GitHub, or:
 
@@ -28,14 +39,14 @@ You need: [Claude Code](https://claude.com/claude-code), Node.js 20+, git. Obsid
    ./init.sh
    ```
 
-   It stamps today's date into the starter pages, installs qmd search and indexes the folder, offers to add
-   the wiki to your global Claude Code instructions, then deletes itself and commits.
+   It stamps today's date into the starter pages, installs qmd and indexes the folder, offers to add the wiki
+   to your global Claude Code instructions, then deletes itself and commits.
 
 3. **Open the folder in Obsidian** as a vault. In Settings → Files and links, set the attachment folder to `raw/assets/`.
 
-4. **Add your first source** to `raw/`. Name it `YYYY-MM-DD-what-it-is.md`. See [raw/README.md](raw/README.md).
+4. **Add your first source** to `raw/`, named `YYYY-MM-DD-what-it-is.md`. See [raw/README.md](raw/README.md).
 
-5. **Run `claude` in the folder and say "ingest".** Claude will ask permission for the qmd search server, agree.
+5. **Run `claude` in the folder and say "ingest".** Claude will ask permission for the qmd search server; agree.
    It reads the source, discusses the key points with you, writes the pages and removes the `examples/` folder.
 
 ## Daily use
@@ -43,67 +54,56 @@ You need: [Claude Code](https://claude.com/claude-code), Node.js 20+, git. Obsid
 | You say | Claude does |
 |---|---|
 | "ingest raw/articles/….md" | reads it, writes a page, updates related pages, the hub, the index, the log and the search index |
-| something worth keeping, in chat | saves your words to `raw/notes/` first, then ingests them (Capture) |
+| something worth keeping, in chat | saves your words to `raw/notes/` first, then ingests them |
 | any question | searches with qmd, reads the pages, answers with links; saves overviews and comparisons as pages |
-| "lint" | finds contradictions, stale claims, pages without links, sources without pages. Offers it every tenth ingest |
+| "lint" | finds contradictions, stale claims, pages without links, sources without pages; offered every tenth ingest |
 
 Claude commits to an `ingest/<topic>` branch. Push and pull requests happen only when you ask.
 
-## How it is built, in plain words
+## What a page looks like
 
-Think of it as a small library with one librarian. You bring books, the librarian reads them and writes the
-catalog cards, the summaries and the cross-references. You only read the cards and ask the librarian questions.
+Every page starts with a YAML header and one paragraph saying what it is and where it comes from.
+From [`examples/decision-garden-app-local-only.md`](examples/decision-garden-app-local-only.md):
 
-**`raw/` is the shelf of originals.** Everything you bring goes here, unchanged: an article you clipped, a journal
-entry, a meeting transcript, a session log. Files are never edited or deleted, because the wiki pages point back
-to them as evidence. You put files here (or Claude does it for you when you say "save this"). Claude only reads.
+```markdown
+---
+type: decision
+title: garden-app без сервера
+created: 2026-02-01
+status: active
+sources:
+  - raw/projects/2026-02-01-garden-app-session.md
+---
 
-**`wiki/` is the catalog the librarian writes.** Every file here is written by Claude from what is in `raw/`.
-You never edit these by hand; if you want something changed, say it in chat, otherwise Claude will overwrite it.
+Рішення у [[project-garden-app]] 2026-02-01: дані тільки на телефоні, без акаунтів і бекенду.
 
-- `me.md` is the front desk: who you are right now, what you are busy with, links to everything else. Claude
-  rereads it before any work and updates it after every ingest.
-- `areas/` are the long-running parts of life that never "finish": health, work, money, relationships. One page each.
-- `projects/` are things with an end. Each project page says: goal, where it is now, next step. A big project
-  gets its own folder with a log of what happened session by session.
-- `people/` are the people in your sources: who they are, how you know them, what you talked about.
-- `themes/` are patterns Claude notices across several sources: "this keeps happening to you". This is where
-  the wiki becomes more than a summary.
-- `decisions/` are decisions you made: what, when, why, and what you expected. Later you can check whether
-  it went that way.
-- `journal/` is a monthly or quarterly summary written by Claude, not a copy of your daily entries.
-- `answers/` keeps the good answers Claude gave you (overviews, comparisons), so the next time you ask the
-  same thing it reads one page instead of ten.
-- `waiting.md` is the one list of everything that waits for your decision, with the date it came up.
-- `questions.md` holds ten questions you actually ask. Claude checks regularly that the wiki can answer
-  each of them from one or two pages.
-- `index.md` is the table of contents: one line per page. `log.md` is the diary of what Claude did and when.
+## Що вирішено
+## Чому
+## Що очікується
+## Як пішло
+```
 
-**`CLAUDE.md` is the librarian's instruction manual.** It says where things go, what a page looks like, what
-to do when a new source arrives, what to check during a cleanup, and that nothing is pushed to GitHub without
-your word. If you want the wiki to behave differently, you change this file.
+## Layout
 
-**`templates/` are blank forms.** One per page type, with the header fields already in place. Claude starts
-every new page from the matching form, so all pages look alike.
+```
+raw/        your sources; Claude only reads them         (raw/README.md)
+wiki/       pages written by Claude: me.md, waiting.md, questions.md, index.md, log.md,
+            areas/ projects/ people/ themes/ decisions/ journal/ answers/
+templates/  page skeletons per type
+examples/   fictional sample pages, removed after the first ingest
+docs/       ARCHITECTURE.md, every part explained in plain words
+CLAUDE.md   rules for Claude: structure, page header, operations, git
+.mcp.json   connects qmd search to Claude Code
+init.sh     one-time setup, deletes itself
+```
 
-**`examples/` are filled-in sample forms.** Fictional pages that show what a good page looks like. They exist
-only to teach; Claude deletes the folder after your first real source is in.
-
-**qmd is the search.** It reads every file in `raw/` and `wiki/` and lets Claude find things by meaning, not
-just by exact words. `.mcp.json` is the one-line config that plugs it into Claude Code. The index lives in
-your home folder, not in the repo.
-
-**git is the memory of changes.** Every change Claude makes is a commit on a side branch. You see what changed,
-you can undo it, and nothing goes to GitHub until you say so.
-
-**Obsidian is the reading room.** It shows the pages, the links between them and the graph. It is optional:
-the files are plain markdown and open anywhere.
+The long version of what each part does and why: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Search
 
-Search is built in: [qmd](https://github.com/tobi/qmd) indexes `wiki/` and `raw/` and runs as an MCP server for
-Claude Code (`.mcp.json`). Claude searches with it on every question and refreshes the index after every ingest.
-You can search from the terminal too:
+[qmd](https://github.com/tobi/qmd) indexes `wiki/` and `raw/` and runs as an MCP server for Claude Code
+(`.mcp.json`). Claude searches with it on every question and refreshes the index after every ingest.
+From the terminal:
 
 ```bash
 qmd query "what did I agree with Olena"
@@ -113,14 +113,45 @@ qmd search "garden-app"          # keywords only, no model
 The index lives in `~/.cache/qmd/`, outside the repo. The first run downloads models for semantic search
 (a few minutes, a few hundred MB).
 
+## Troubleshooting
+
+- **`qmd update` stops with "Update command failed"** — another qmd collection on your machine has an
+  update command (for example `git pull`) that fails, and `qmd update` aborts before reaching this wiki.
+  Fix that collection (`qmd collection update-cmd <name> ''`) or re-index this one:
+  `qmd collection remove <name> && qmd collection add . --name <name> --mask "**/*.md" && qmd embed -c <name>`.
+- **Claude does not see the search tools** — the MCP server from `.mcp.json` needs your approval on the
+  first run in this folder. Run `claude mcp list` to check it is connected.
+- **Semantic search is weak in your language** — qmd's default embedding model is English-optimised. Set
+  `QMD_EMBED_MODEL=hf:Qwen/Qwen3-Embedding-0.6B-GGUF/Qwen3-Embedding-0.6B-Q8_0.gguf` and run `qmd embed -f`.
+- **A page was overwritten** — you edited a wiki page by hand and Claude rewrote it. Only `raw/` is yours;
+  ask for changes to `wiki/` in chat.
+- **Two Claude sessions edit the wiki at once** — each works in its own `ingest/*` branch; merge them like any
+  branches.
+
 ## Language
 
-The rules in `CLAUDE.md`, the page templates and the examples are written in Ukrainian. Claude follows them
-regardless of the language you talk to it in. To switch, ask Claude to translate `CLAUDE.md` and `templates/`
-in your first session.
+`CLAUDE.md`, the page templates and the examples are written in Ukrainian. Claude follows them regardless of
+the language you talk to it in. To switch, ask Claude to translate `CLAUDE.md` and `templates/` in your first
+session.
 
 ## Adapting it
 
 The template is set up for a personal wiki. For research, a book or a team, open `CLAUDE.md` and change the
-`wiki/` sections and the content rules. Everything else, `raw/`, the index, the log, search and the git flow,
-works for any topic.
+`wiki/` sections and the content rules. Everything else works for any topic.
+
+## Contributing
+
+Issues and pull requests are welcome. Keep changes small and explain what problem they solve. Changes to
+`CLAUDE.md` should come with a sentence on how they alter Claude's behaviour.
+
+## Credits
+
+- The idea and the text of [`llm-wiki.md`](llm-wiki.md) are Andrej Karpathy's
+  [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) (2026). This repository is
+  one concrete implementation of it.
+- Search by [qmd](https://github.com/tobi/qmd), Tobi Lütke, MIT.
+- Built and maintained with [Claude Code](https://claude.com/claude-code).
+
+## License
+
+[MIT](LICENSE)
