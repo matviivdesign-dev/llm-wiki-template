@@ -1,6 +1,13 @@
+---
+type: hub
+title: Index
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+---
+
 # Index
 
-Каталог wiki: кожна сторінка — лінк і один рядок суті. Оновлюється на кожен ingest.
+Каталог wiki: кожна сторінка — лінк і один рядок суті, не довше 160 символів. Деталі на сторінці, не тут.
 
 ## Хаб
 
@@ -27,5 +34,9 @@ TBD
 TBD
 
 ## Journal
+
+TBD
+
+## Sources
 
 TBD
